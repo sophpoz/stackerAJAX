@@ -31,11 +31,61 @@ var showQuestion = function(question) {
 	return result;
 };
 
+var showTopAnswerer = function(answerer) {
+	
+	// clone our result template code
+	var result = $('.templates .answerer').clone();
+
+	var asked = result.find('.user');
+	asked.html('<a target="_blank" '+
+		'href=http://stackoverflow.com/users/' + answerer.user.user_id + ' >' +
+		answerer.user.display_name +
+		'</a>')
+
+	// set the .viewed for answerer property in result
+	var postCount = result.find('.postCount');
+	postCount.text(answerer.post_count);
+
+	var score = result.find('.score');
+	score.text(answerer.score);
+
+	return result;
+};
+
+var getTopAnswerers = function(tag) {
+
+	$.ajax({
+		url: "http://api.stackexchange.com/2.2/tags/" + tag + "/top-answerers/all_time?site=stackoverflow",
+		dataType: "jsonp",//use jsonp to avoid cross origin issues
+		type: "GET",
+	})
+	.done(function(result){ //this waits for the ajax to return with a succesful promise object
+		console.log(result);
+		var searchResults = showAnswererResults(tag, result.items.length);
+
+		$('.search-results').html(searchResults);
+		//$.each is a higher order function. It takes an array and a function as an argument.
+		//The function is executed once for each item in the array.
+		$.each(result.items, function(i, item) {
+			var question = showTopAnswerer(item);
+			$('.results').append(question);
+		});
+	})
+	.fail(function(jqXHR, error){ //this waits for the ajax to return with an error promise object
+		var errorElem = showError(error);
+		$('.search-results').append(errorElem);
+	});
+};
 
 // this function takes the results object from StackOverflow
 // and returns the number of results and tags to be appended to DOM
 var showSearchResults = function(query, resultNum) {
 	var results = resultNum + ' results for <strong>' + query + '</strong>';
+	return results;
+};
+
+var showAnswererResults = function(query, resultNum) {
+	var results = resultNum + ' results for Top Answerers of <strong>' + query + '</strong>';
 	return results;
 };
 
@@ -91,4 +141,10 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+	$('.inspiration-getter').submit( function(e){
+		e.preventDefault();
+		$('.results').html('');
+		var tag = $(this).find("input[name='answerers']").val();
+		getTopAnswerers(tag);
+	})
 });
