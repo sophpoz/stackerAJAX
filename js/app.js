@@ -22,7 +22,7 @@ var showQuestion = function(question) {
 	// set some properties related to asker
 	var asker = result.find('.asker');
 	asker.html('<p>Name: <a target="_blank" '+
-		'href=http://stackoverflow.com/users/' + question.owner.user_id + ' >' +
+		'href=https://stackoverflow.com/users/' + question.owner.user_id + ' >' +
 		question.owner.display_name +
 		'</a></p>' +
 		'<p>Reputation: ' + question.owner.reputation + '</p>'
@@ -38,7 +38,7 @@ var showTopAnswerer = function(answerer) {
 
 	var asked = result.find('.user');
 	asked.html('<a target="_blank" '+
-		'href=http://stackoverflow.com/users/' + answerer.user.user_id + ' >' +
+		'href=https://stackoverflow.com/users/' + answerer.user.user_id + ' >' +
 		answerer.user.display_name +
 		'</a>')
 
@@ -55,7 +55,7 @@ var showTopAnswerer = function(answerer) {
 var getTopAnswerers = function(tag) {
 
 	$.ajax({
-		url: "http://api.stackexchange.com/2.2/tags/" + tag + "/top-answerers/all_time?site=stackoverflow",
+		url: "https://api.stackexchange.com/2.2/tags/" + tag + "/top-answerers/all_time?site=stackoverflow",
 		dataType: "jsonp",//use jsonp to avoid cross origin issues
 		type: "GET",
 	})
@@ -109,7 +109,7 @@ var getUnanswered = function(tags) {
 	};
 	
 	$.ajax({
-		url: "http://api.stackexchange.com/2.2/questions/unanswered",
+		url: "https://api.stackexchange.com/2.2/questions/unanswered",
 		data: request,
 		dataType: "jsonp",//use jsonp to avoid cross origin issues
 		type: "GET",
